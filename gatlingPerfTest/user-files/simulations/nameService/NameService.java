@@ -87,41 +87,21 @@ public class NameService extends Simulation {
 //                        rampUsers(50).during(10),
 //                        rampUsers(70).during(10)
 //                )
-//        ).protocols(httpProtocol);
+//        ).protocols(httpProtocol)
+//        .maxDuration(120);
 
         // STABILITY
         setUp(
                 searchByName.injectOpen(
-                        // Длительность разгона
-                        incrementUsersPerSec(1)
-                        // Количество ступеней
-                        .times(20)
-                        // Длительность полки
-                        .eachLevelLasting(60)
+                        rampUsersPerSec(0).to(10).during(20),
+                        constantUsersPerSec(10).during(60)
                 )
-        ).protocols(httpProtocol);
+        ).protocols(httpProtocol)
+                .maxDuration(120);
     }
 
 
 
-
-
-        // STABILITY
-//        setUp(myScenario.injectOpen(
-//                // Длительность разгона
-//                incrementUsersPerSec(0)
-//                        // Количество ступеней
-//                .times(8)
-//                        // Длительность полки
-//                .eachLevelLasting(30)
-//                        // длительность разгона
-//                .separatedByRampsLasting(20)
-//                        // Начало нагрузки с rps
-//                .startingFrom(0))
-//                ).protocols(httpProtocol)
-//                //  Общая длительность теста
-//                .maxDuration(1);
-  //  }
 
 
     @Override

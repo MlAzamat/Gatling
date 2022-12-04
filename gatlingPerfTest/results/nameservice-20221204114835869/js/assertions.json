@@ -1,0 +1,10 @@
+{
+  "simulation": "nameService.NameService",
+  "simulationId": "nameservice-20221204114835869",
+  "start": 1670154577054,
+  "description": "ws",
+  "scenarios": ["name"],
+  "assertions": [
+
+  ]
+}
