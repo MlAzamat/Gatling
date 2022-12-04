@@ -91,10 +91,14 @@ public class NameService extends Simulation {
 
         // STABILITY
         setUp(
-                searchByName.injectOpen(incrementUsersPerSec(0).times(2).eachLevelLasting(30))
-                        //rampUsers(10).wait(30)
-                      //  during(60)
-             //   )
+                searchByName.injectOpen(
+                        // Длительность разгона
+                        incrementUsersPerSec(1)
+                        // Количество ступеней
+                        .times(20)
+                        // Длительность полки
+                        .eachLevelLasting(60)
+                )
         ).protocols(httpProtocol);
     }
 
