@@ -1,9 +1,6 @@
 package nameService;
 
-import io.gatling.javaapi.core.ChainBuilder;
-import io.gatling.javaapi.core.FeederBuilder;
-import io.gatling.javaapi.core.ScenarioBuilder;
-import io.gatling.javaapi.core.Simulation;
+import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -40,18 +37,27 @@ public class NameService extends Simulation {
             .exec(http("Name in header POST")
                     .post("/name")
                     .header("name", "#{name}")
-                    .header("content-type", "application/json")
-                    .ignoreProtocolHeaders()
                     .check(status().is(200)))
             .pause(1,2)
             .exec(http("Name in JSON POST")
                     .post("/name")
                     .body(StringBody("{\"name\":\"#{name}\"}"))
+                    .header("content-type", "application/json")
+                    .ignoreProtocolHeaders()
                     .check(status().is(200)))
             .pause(1,2)
             .exec(http("Name in file JSON POST")
                     .post("/name")
                     .body(ElFileBody("name.json"))
+                    .header("content-type", "application/json")
+                    .ignoreProtocolHeaders()
+                    .check(status().is(200)))
+            .pause(1,2)
+            .exec(http("Name in file XML POST")
+                    .post("/name")
+                    .body(ElFileBody("name.xml"))
+                    .header("content-type", "application/xnl")
+                    .ignoreProtocolHeaders()
                     .check(status().is(200)))
             ;
 
@@ -68,39 +74,33 @@ public class NameService extends Simulation {
 
 
     {
+        // DEBUG
+//        setUp(
+//                searchByName.injectOpen(atOnceUsers(1))
+//        ).protocols(httpProtocol);
+
+        // MAXPERF
+//        setUp(
+//                searchByName.injectOpen(nothingFor(10),
+//                        rampUsers(10).during(10),
+//                        rampUsers(30).during(10),
+//                        rampUsers(50).during(10),
+//                        rampUsers(70).during(10)
+//                )
+//        ).protocols(httpProtocol);
+
+        // STABILITY
         setUp(
-          //      searchByName.injectOpen(atOnceUsers(2000))
-                searchByName.injectOpen(nothingFor(10),
-                        rampUsers(10).during(10),
-                        rampUsers(20).during(10),
-                        rampUsers(30).during(10),
-                        rampUsers(40).during(10)
-                )
-         //       searchByName.injectOpen(rampUsers(500).during(200))
+                searchByName.injectOpen(incrementUsersPerSec(0).times(2).eachLevelLasting(30))
+                        //rampUsers(10).wait(30)
+                      //  during(60)
+             //   )
         ).protocols(httpProtocol);
     }
 
 
 
 
-        // DEBUG
-//        setUp(myScenario.injectOpen(atOnceUsers(1)).protocols(httpProtocol)).maxDuration(1);
-
-        // MAXPERF
-//        setUp(myScenario.injectOpen(
-//                // Интенсивность на ступень
-//                incrementUsersPerSec(10)
-//                        // Количество ступеней
-//                .times(8)
-//                        // Длительность полки
-//                .eachLevelLasting(30)
-//                        // длительность разгона
-//                .separatedByRampsLasting(20)
-//                        // Начало нагрузки с rps
-//                .startingFrom(0))
-//                ).protocols(httpProtocol)
-//                //  Общая длительность теста
-//                .maxDuration(1);
 
         // STABILITY
 //        setUp(myScenario.injectOpen(
